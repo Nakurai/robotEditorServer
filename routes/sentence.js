@@ -64,6 +64,35 @@ Sentence.prototype.extractNeedle=function(){
 }
 
 
+
+/**
+* Creates a JSON object understandable by the client:
+* 	{
+*		literal:"investiture John Kennedy”,
+* 		img:[
+* 			{'url':"http://img1_1.jpg”, 'relevance':100},
+* 			{'url':"http://img1_2.jpg”, 'relevance':85},
+* 			{'url':"http://img1_3.jpg”, 'relevance':75},
+* 		]
+	}
+* @param
+* @return [JSON] the sentence formatted
+*/
+Sentence.prototype.getJson = function(){
+	var res = {};
+	res.literal = this.literal;
+	res.img = [];
+	var nbImages = this.img.length;
+	for(var cpt=0; cpt<nbImages; cpt++){
+		res.img.push( {'url':this.img[cpt].url, 'relevance':this.img[cpt].relevance} );
+	}
+
+	return res;
+
+};
+
+
+
 /**
 	The only visible function in this module. It
 	only creates a new analysis and launch it.

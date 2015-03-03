@@ -12,18 +12,7 @@ function WebSearcher(){
 * @param {userInputSentences:[]} all the sentences from the user's input, one y one
 * @return {sentences:[]} the same than the parameters but with all images and web references
 * @todo For now, the output sentences are possibly NOT in the same order than in the input. one has to make sure that it is.
-
-*{
-* "investiture John Kennedy”: [
-* {"http://img1_1.jpg” : {pertinence:100}},
-* {"http://img1_2.jpg” : {pertinence:85}},
-* {"http://img1_3.jpg” : {pertinence:75}}
-* ],
-* "baie cochons 1961”: [
-* {"http://img2_1.jpg” : {pertinence:100}},
-* {"http://img2_2.jpg” : {pertinence:35}},
-* ]
-* }
+* @error images don't match the sentence...
 */
 WebSearcher.prototype.go = function(userInputSentences){
 	
@@ -103,7 +92,7 @@ WebSearcher.prototype.googleImageSearch = function(query_terms){
 	var deferred = this.q.defer();
 
 	// here are the options for the query (see google_cse_api_doc.txt file)
-	var options = { cx:this.keys.cx, q:query_terms, auth:this.keys.api, searchType:'image', dateRestrict:'m[3]', gl:'fr', hl:'lang_fr', safe:'medium' };
+	var options = { cx:this.keys.cx, q:query_terms, auth:this.keys.api, searchType:'image', dateRestrict:'m[3]', gl:'fr', hl:'lang_fr', rights:'cc_publicdomain', safe:'medium' };
 
 	this.googleSearch(options, 'img').then(
 		// If the search is successful
@@ -115,7 +104,7 @@ WebSearcher.prototype.googleImageSearch = function(query_terms){
 			if (result.items && nbItems > 0) {
 				for(var cpt=0; cpt<nbItems; cpt++){
 					var image = result.items[cpt];
-					res.push({'url':image.link, 'snippet':image.snippet, 'title':image.title, 'site':image.displayLink});
+					res.push({'url':image.link, 'snippet':image.snippet, 'title':image.title, 'site':image.displayLink, 'relevance':0});
 				}
 			}
 			
@@ -181,6 +170,7 @@ WebSearcher.prototype.googleSearch = function(options, source){
 
 	var deferred = this.q.defer();
 	
+	//*
 	this.customsearch.cse.list(options, function(err, resp){
 		if (err) {
 			console.log('An error occured during cse.list search', err);
@@ -193,7 +183,7 @@ WebSearcher.prototype.googleSearch = function(options, source){
 			deferred.resolve(resp);
 		}
 	});
-	
+	//*/
 
 
 

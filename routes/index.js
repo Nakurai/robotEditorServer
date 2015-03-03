@@ -47,7 +47,9 @@ router.post('/analyze', function(req, res, next) {
 	if (params.string === undefined || params.string.length == 0) {
 		output="Body malformed : String parameter is missing";
 		res.render('test', { title: 'test', answer:output });
-	} else {
+
+	} 
+	else {
 		// This function takes all the user's text and sends back a table of Sentences{tokens, nbTokens, literal, needle, img, web}
 		nlp.userTextAnalysis(params.string).then(
 			function(sentences_apart){
@@ -56,22 +58,21 @@ router.post('/analyze', function(req, res, next) {
 				webSearcher.go(sentences_apart).then(
 
 					function(sentences_completed){
-						/*
-						var test = [];
-						for(var cpt=0; cpt<sentences_completed.length; cpt++){
-							if(sentences_completed[cpt].img[0].url){
-								test.push(sentences_completed[cpt].img[0].url);
-							}
-							else{
-								test.push("http://undefined.fr");	
-							}
-							
-						}
-						*/
-						res.render('test', { title: 'test', answer:sentences_completed });		
 
 						// Now, all the sentences have been attached to images and webresult. Nlp is once again used 
 						// to rank these results
+						sentences_completed = nlp.rankSentences(sentences_completed);
+
+						// The analysis is over, the answer is constructed and sent back
+						var ans = [];
+						var nbSentences = sentences_completed.length;
+						for(var cpt=0; cpt<nbSentences; cpt++){
+							ans.push(sentences_completed[cpt].getJson());
+						}
+						
+						//res.render('test', { title: 'test', answer:ans });
+						res.status(200).json(ans);
+
 					},
 					function(error){
 						res.render('test', { title: 'test', answer:error });

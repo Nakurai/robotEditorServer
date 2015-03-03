@@ -119,6 +119,28 @@ Nlp.prototype.processText = function(text){
 
 
 /**
+* This function do some nlp analysis and, for each sentence, rank each of its images
+* @param {sentences:[]} table of Sentence class
+* @return [sentences] the input table filled
+*/
+Nlp.prototype.rankSentences = function(sentences){
+
+	var nbSentences = sentences.length;
+	for(var s=0; s<nbSentences; s++){
+
+		var nbImages = sentences[s].img.length;
+		for(var image=0; image<nbImages; image++){
+			sentences[s].img[image].relevance = 100;
+		}
+
+	}
+
+	return sentences;
+
+};
+
+
+/**
 	The only visible function in this module. It
 	only creates a new analysis and launch it.
 */
